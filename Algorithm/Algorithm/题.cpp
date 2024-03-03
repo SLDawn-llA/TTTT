@@ -91,7 +91,7 @@
 ////    ans += 1.0 * c / a[i].m * a[i].v;
 //
 //
-////P1223 排队接水   未完全过 82
+//////P1223 排队接水   未完全过 82
 //#include<iostream>
 //#include<algorithm>
 //
@@ -101,13 +101,14 @@
 //    int num;
 //    int t;
 //}a[1010];
-//int ans, n = 0;
+//double ans = 0;///////之前定义的ans 是int类型（后面乘以1.0即可）  82   但改成double类型 （后面不用乘以1.0) AC
+//int n = 0;
 //
-//bool cmp(water a, water b)
+//bool cmp(water x, water y)
 //{
-//    if (a.t != b.t)
-//        return a.t < b.t;
-//    return a.num < b.num;
+//    if (x.t != y.t)
+//        return x.t < y.t;
+//    return x.num < y.num;
 //}
 //
 //int main()
@@ -123,14 +124,15 @@
 //    for (int i = 1; i <= n; i++)
 //    {
 //        cout << a[i].num << " ";
-//        ans += i * a[n - i].t;
+//        ans += (n - i) * a[i].t;
 //    }
 //    cout << endl;
-//    cout << ans * 1.0 / n << endl;
+//    printf("%.2f", ans / n);
+//    //cout << ans * 1.0 / n << endl;
 //    return 0;
+//}
 //
-//
-//}P1047 [NOIP2005 普及组] 校门外的树
+//P1047 [NOIP2005 普及组] 校门外的树
 //#include<iostream>
 //using namespace std;
 //int l[10100] = { 0 };
@@ -189,5 +191,54 @@
 //		cout << d[0].num + 1;
 //	return 0;
 //}
+//#include<iostream>
+//
+//using namespace std;
+// char a[1010];
+//int main()
+//{
+//	int m;
+//	cin >> m;
+//	cin.getline(a, 1010);//////cin.getline     (数组，最大空间) 最大读取的字符数，避免数组溢出。
+//	int x = strlen(a)-1;//////strlen 函数 得到字符的大小 不包括\0   而 sizeof包括 而且这里如果用sizeof 得到的是整个数组的大小//10101
+//	////这里是因为 cin.getline 会将换行符号输入‘’当做第一个元素 而非1 所以要排除干扰 -1
+//	for (int i = 1; i <=x; i++)
+//	{
+//		if (a[i] !='0')///这里是 字符数组 而不是整形数组所以要用‘’ 若不用直接！=0 就会10101字符串全过  
+//		{
+//			if (i == 1)
+//				cout << a[i] <<"*"<<m << "^" << (x - i);
+//			else
+//				cout << "+" << a[i] << "*" << m <<"^" << (x - i);
+//		}
+//		else
+//			continue;
+//	}
+//	return 0;
+//}
+#include<iostream>
+using namespace std;
+int a[100000];
+int k,n;
+const int m = 100003;
+int main()
+{
+	cin >> n >> k;
+	a[0] = 1;////就想 k=2时a[2]=a[1]+a[0]   按理说有两种 但若a[0]=0 就只有一种了不合常理 所以a[0]=1  第0阶没爬就到了也是一种嘛不能不算
+	a[1] = 1;
+	//每一阶 方法的总和
+	for (int i = 2; i <= n; i++)//0 1阶已经定义了 就从第二阶开始
+	{//每一阶 的计算方法  假设第i阶 就是i-1 i-2 i-3 ----》i-k(还差一步（1到k阶大小的一步）的所有情况的总和)而且最早的第一第二阶已经定义好了 接下来只用递推就行
+		for (int j = 1; j <= k; j++)//从i-1 到i-k
+		{//a[i] += a[i - j];佬们为什么不这么写 是因为还要mod 为什么要mod呢 我觉得由于结果比较大，一定不要忘记边走边模！所以如下
+			if (i >= j)////k有可能>i (n) 则当j=k时 i-j<0 要排除    当然k>n时方法当然也不止一种 一步不一定用最大的k呀 也可以用1 2步来组合 所以只用让i-j>=0即可  
+				a[i] = (a[i] + a[i - j]) % m;//小于零 不用写 或者continue都行 排除就好了
+			else
+				continue;
+		}
+	}
+	cout << a[n]%m;
+	return 0;
+}
 
-////////////////////目前题数 9 含5（1未过）
+////////////////////目前题数 10 含6（全部AC）
